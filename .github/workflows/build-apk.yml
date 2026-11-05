@@ -1,4 +1,3 @@
-
 name: Build ABVIVA Android APK
 
 on:
@@ -32,4 +31,3 @@ jobs:
         with:
           name: ABVIVA-Loan-Calculator-APK
           path: app/build/outputs/apk/debug/app-debug.apk
-
