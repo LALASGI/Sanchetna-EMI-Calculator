@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      RELEASE_TAG: v1.4
+      RELEASE_TAG: v1.5
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
-          name: ABVIVA Loan Calculator 1.4
+          name: ABVIVA Loan Calculator 1.5
           make_latest: true
           generate_release_notes: true
           files: ABVIVA_Android_Studio_Project_Exact_Logo/app/build/outputs/apk/release/app-release.apk
