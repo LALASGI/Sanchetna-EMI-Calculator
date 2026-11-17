@@ -1,4 +1,3 @@
-
 name: Build ABVIVA Android APK
 
 on:
@@ -21,17 +20,19 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Build APK
         uses: gradle/gradle-build-action@v3
         with:
           gradle-version: '8.7'
-          arguments: assembleDebug
+          arguments: -p ABVIVA_Android_Studio_Project_Exact_Logo assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ABVIVA-Loan-Calculator-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: ABVIVA_Android_Studio_Project_Exact_Logo/app/build/outputs/apk/debug/app-debug.apk
