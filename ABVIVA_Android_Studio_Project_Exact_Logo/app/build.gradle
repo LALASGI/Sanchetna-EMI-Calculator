@@ -6,6 +6,10 @@ android {
     namespace 'com.abviva.loancalculator'
     compileSdk 35
 
+    buildFeatures {
+        buildConfig true
+    }
+
     defaultConfig {
         applicationId 'com.abviva.loancalculator'
         minSdk 23
