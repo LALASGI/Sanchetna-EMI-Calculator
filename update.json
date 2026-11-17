@@ -1,6 +1,6 @@
 {
-  "versionCode": 4,
-  "versionName": "1.3",
-  "apkUrl": "https://github.com/LALASGI/Sanchetna-EMI-Calculator/releases/download/v1.3/app-release.apk",
-  "releaseNotes": "इस संस्करण में ऐप के अंदर से सीधे अपडेट डाउनलोड करने की सुविधा जोड़ी गई है।"
+  "versionCode": 5,
+  "versionName": "1.4",
+  "apkUrl": "https://github.com/LALASGI/Sanchetna-EMI-Calculator/releases/download/v1.4/app-release.apk",
+  "releaseNotes": "ऐप अपडेट डाउनलोड प्रक्रिया में सुधार और अनिवार्य अपडेट व्यवस्था।"
 }
