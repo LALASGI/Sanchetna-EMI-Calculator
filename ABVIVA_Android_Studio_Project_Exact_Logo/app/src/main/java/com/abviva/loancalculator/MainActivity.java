@@ -16,6 +16,8 @@ import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
 import android.content.Intent;
 import android.net.Uri;
+import android.app.DownloadManager;
+import android.os.Environment;
 
 import org.json.JSONObject;
 
@@ -28,14 +30,13 @@ import java.net.URL;
 public class MainActivity extends Activity {
     private static final String VERSION_URL =
             "https://raw.githubusercontent.com/LALASGI/Sanchetna-EMI-Calculator/main/update.json";
-    private static final String RELEASES_URL =
-            "https://github.com/LALASGI/Sanchetna-EMI-Calculator/releases/latest";
 
     private WebView webView;
     private LinearLayout statusLayout;
     private TextView statusText;
     private ProgressBar progressBar;
     private Button actionButton;
+    private String latestApkUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,12 +117,13 @@ public class MainActivity extends Activity {
                 int latestVersion = data.getInt("versionCode");
                 String latestName = data.optString("versionName", "नया संस्करण");
                 String releaseNotes = data.optString("releaseNotes", "नए संस्करण में सुधार उपलब्ध हैं।");
+                latestApkUrl = data.optString("apkUrl", "");
 
                 runOnUiThread(() -> {
                     if (latestVersion > BuildConfig.VERSION_CODE) {
                         showStatus("नया अपडेट उपलब्ध है: " + latestName + "\n\n"
                                         + releaseNotes + "\n\nपुराने संस्करण में ऐप इस्तेमाल नहीं किया जा सकेगा।",
-                                false, "UPDATE NOW", this::openUpdatePage);
+                                false, "DOWNLOAD UPDATE", this::downloadUpdate);
                     } else {
                         openCalculator();
                     }
@@ -136,12 +138,28 @@ public class MainActivity extends Activity {
         }).start();
     }
 
-    private void openUpdatePage() {
+    private void downloadUpdate() {
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(RELEASES_URL)));
+            if (latestApkUrl == null || !latestApkUrl.startsWith("https://")) {
+                throw new IllegalArgumentException("Invalid APK download URL");
+            }
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(latestApkUrl));
+            request.setTitle("ABVIVA Loan Calculator Update");
+            request.setDescription("नया अपडेट डाउनलोड हो रहा है। डाउनलोड पूरा होने पर नोटिफिकेशन खोलें।");
+            request.setMimeType("application/vnd.android.package-archive");
+            request.setNotificationVisibility(
+                    DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS, "ABVIVA_Loan_Calculator_Update.apk");
+
+            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            if (manager == null) throw new Exception("Download service unavailable");
+            manager.enqueue(request);
+            showStatus("अपडेट डाउनलोड शुरू हो गया है। डाउनलोड पूरा होने पर फोन के नोटिफिकेशन में इसे खोलें और Install दबाएँ।",
+                    false, "CHECK AGAIN", this::checkForUpdate);
         } catch (Exception error) {
-            if (statusText != null) statusText.setText(
-                    "अपडेट पेज नहीं खुल सका। कृपया इंटरनेट और ब्राउज़र जाँचें।");
+            showStatus("अपडेट डाउनलोड शुरू नहीं हो सका। इंटरनेट कनेक्शन जाँचकर फिर कोशिश करें।",
+                    false, "RETRY", this::downloadUpdate);
         }
     }
 
