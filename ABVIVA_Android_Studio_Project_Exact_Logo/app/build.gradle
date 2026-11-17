@@ -14,7 +14,24 @@ android {
         applicationId 'com.abviva.loancalculator'
         minSdk 23
         targetSdk 35
-        versionCode 2
-        versionName '1.1'
+        versionCode 3
+        versionName '1.2'
+    }
+
+    signingConfigs {
+        release {
+            def keystoreFile = rootProject.file("abviva-release-key.jks")
+            storeFile keystoreFile
+            storePassword System.getenv("ABVIVA_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("ABVIVA_KEY_ALIAS")
+            keyPassword System.getenv("ABVIVA_KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
     }
 }
